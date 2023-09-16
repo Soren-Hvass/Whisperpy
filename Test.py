@@ -56,9 +56,8 @@ class WhisperAPI:
         audio_file= open(audio_file, "rb")
         transcript = openai.Audio.transcribe("whisper-1", audio_file)
         return transcript
-
 recorder = Recorder()
-whisper = WhisperAPI('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')
+whisper = WhisperAPI()
 
 def on_button_press(event):
     threading.Thread(target=recorder.start_recording).start()
