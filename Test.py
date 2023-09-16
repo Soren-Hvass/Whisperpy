@@ -46,9 +46,11 @@ class Recorder:
             self.audio = np.concatenate(self.audio, axis=0)
             wav.write('output.wav', self.fs, self.audio)  # Save as WAV file
 
-class WhisperAPI:
-    def __init__(self, api_key):
-        openai.api_key = "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"
+class WhisperAPI: 
+    def __init__(self):
+        with open('config.json') as config_file:
+            data = json.load(config_file)
+        openai.api_key = data['api_key']
 
     def transcribe(self, audio_file):
         audio_file= open(audio_file, "rb")
