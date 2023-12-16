@@ -8,6 +8,7 @@ import json
 import openai  # Added the import for openai
 import keyboard
 import pyperclip  # Added the import for pyperclip
+import os  # Added the import for os
 
 class GlobalListener:
     def __init__(self, callback):
@@ -48,9 +49,12 @@ class Recorder:
 
 class WhisperAPI: 
     def __init__(self):
-        with open('config.json') as config_file:
-            data = json.load(config_file)
-        openai.api_key = data['api_key']
+        try:
+            with open('config.json') as config_file:
+                data = json.load(config_file)
+            openai.api_key = data['api_key']
+        except FileNotFoundError:
+            openai.api_key = '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'  # Replace 'your_static_key_here' with your static key
 
     def transcribe(self, audio_file):
         audio_file= open(audio_file, "rb")
@@ -92,6 +96,17 @@ button2 = tk.Button(frame, text='Send to AI translator', width=40, height=12, pa
 button2.pack(side='left')
 button2.bind('<Button-1>', on_button2_click)
 
+slider_frame = tk.LabelFrame(frame, text="Slider", padx=5, pady=5)
+slider_frame.pack(side='left', padx=0, pady=0)
+
+slider = tk.Scale(slider_frame, from_=1, to=100, orient=tk.HORIZONTAL)
+slider.pack()
+
+slider_output = tk.StringVar()
+slider_output.set(slider.get())
+slider_label = tk.Label(slider_frame, textvariable=slider_output, state='disabled')
+slider_label.pack()
+
 main_frame = tk.Frame(root)
 main_frame.pack()
 
@@ -116,5 +131,8 @@ text_output = tk.Text(root, height=16)
 text_output.pack()
 text_output.insert(tk.END, "Press and hold the record button to record for transcription")
 
+root.lift()  # Added the line to make the program window focused on launch
+root.attributes('-topmost',True)  # Added the line to keep the program window always on top
+root.after_idle(root.attributes,'-topmost',False)  # Added the line to remove the always on top attribute after the window is launched
 
 root.mainloop() # YOLO SLAGGING
