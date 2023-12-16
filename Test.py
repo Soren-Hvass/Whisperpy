@@ -79,6 +79,10 @@ def transcribe_and_insert():
     text_output.insert(tk.END, "'" + transcription_text + "' - copied to clipboard\n ")
     pyperclip.copy(transcription_text)  # Copy the transcription text to the clipboardd the line to copy the transcription to the clipboard
 
+def save_api_key():
+    # Here you can write the code to save the API key
+    api_key = api_key_input.get()
+    print(f"API Key: {api_key}")  # This is just an example, replace with your own logic
 def on_hotkey_press():
     print('Hotkey pressed!')
 listener = GlobalListener(on_hotkey_press)
@@ -86,49 +90,47 @@ listener.start_listening()
 root = tk.Tk()
 root.title("WhisperWriter")  # Set a fitting title
 frame = tk.Frame(root)
-frame.pack()
+frame.grid()
 button1 = tk.Button(frame, text='Record', width=40, height=12, padx=15, pady=15)
-button1.pack(side='left')
+button1.grid(row=0, column=0)
 button1.bind('<ButtonPress-1>', on_button_press)
 button1.bind('<ButtonRelease-1>', on_button_release)
 
 button2 = tk.Button(frame, text='Send to AI translator', width=40, height=12, padx=15, pady=15)
-button2.pack(side='left')
+button2.grid(row=0, column=1)
 button2.bind('<Button-1>', on_button2_click)
 
-slider_frame = tk.LabelFrame(frame, text="Slider", padx=5, pady=5)
-slider_frame.pack(side='left', padx=0, pady=0)
-
-slider = tk.Scale(slider_frame, from_=1, to=100, orient=tk.HORIZONTAL)
-slider.pack()
-
-slider_output = tk.StringVar()
-slider_output.set(slider.get())
-slider_label = tk.Label(slider_frame, textvariable=slider_output, state='disabled')
-slider_label.pack()
-
 main_frame = tk.Frame(root)
-main_frame.pack()
+main_frame.grid()
 
 output_frame = tk.LabelFrame(main_frame, text="Output file", padx=5, pady=5)
-output_frame.pack(side='left', padx=0, pady=0)
+output_frame.grid(row=0, column=0)
+
+transcribe_frame = tk.LabelFrame(main_frame, text="Transcribe KeyBind", padx=5, pady=5)
+transcribe_frame.grid(row=0, column=1)
+
+api_key_frame = tk.LabelFrame(main_frame, text="API KEY", padx=5, pady=5)
+api_key_frame.grid(row=0, column=2)
 
 output_filename = tk.StringVar()
 output_filename.set('output.wav')
 output_label = tk.Label(output_frame, textvariable=output_filename, state='disabled')
-output_label.pack()
-
-transcribe_frame = tk.LabelFrame(main_frame, text="Transcribe KeyBind", padx=5, pady=5)
-transcribe_frame.pack(side='left', padx=0, pady=0)
+output_label.grid()
 
 transcribe_button_field = tk.StringVar()
 transcribe_button_field.set("No hotkey selected")
 transcribe_button_label = tk.Label(transcribe_frame, textvariable=transcribe_button_field, state='disabled')
-transcribe_button_label.pack()
+transcribe_button_label.grid()
+
+api_key_input = tk.Entry(api_key_frame)
+api_key_input.grid()
+
+save_button = tk.Button(api_key_frame, text='Save', command=save_api_key)
+save_button.grid()
 
 # New text output field
 text_output = tk.Text(root, height=16)
-text_output.pack()
+text_output.grid()
 text_output.insert(tk.END, "Press and hold the record button to record for transcription")
 
 root.lift()  # Added the line to make the program window focused on launch
