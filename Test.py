@@ -59,9 +59,12 @@ class WhisperAPI:
             openai.api_key = 'sk-ZZDcq0000000003JI56zT3Blb000000000SrMyk1y6RNU8Ms'  # Backup static key, replace with your static key
 
     def transcribe(self, audio_file):
-        audio_file= open(audio_file, "rb")
-        transcript = openai.Audio.transcribe("whisper-1", audio_file)
-        return transcript
+        try:
+            audio_file= open(audio_file, "rb")
+            transcript = openai.Audio.transcribe("whisper-1", audio_file)
+            return transcript
+        except Exception as e:
+            return str(e)
 recorder = Recorder()
 whisper = WhisperAPI()
 
@@ -76,10 +79,14 @@ def on_button2_click(event):
 
 def transcribe_and_insert():
     transcription = whisper.transcribe('output.wav')
-    transcription_text = transcription.text  # Extract the transcription text
-    text_output.delete('1.0', tk.END)  # Clear the text output field
-    text_output.insert(tk.END, "'" + transcription_text + "' - copied to clipboard\n ")
-    pyperclip.copy(transcription_text)  # Copy the transcription text to the clipboardd the line to copy the transcription to the clipboard
+    if isinstance(transcription, str):  # Check if transcription is an error message
+        text_output.delete('1.0', tk.END)  # Clear the text output field
+        text_output.insert(tk.END, transcription)  # Display the error message
+    else:
+        transcription_text = transcription.text  # Extract the transcription text
+        text_output.delete('1.0', tk.END)  # Clear the text output field
+        text_output.insert(tk.END, "'" + transcription_text + "' - copied to clipboard\n ")
+        pyperclip.copy(transcription_text)  # Copy the transcription text to the clipboardd the line to copy the transcription to the clipboard
 
 def save_api_key():
     # Here you can write the code to save the API key
