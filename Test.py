@@ -10,6 +10,8 @@ import keyboard
 import pyperclip  # Added the import for pyperclip
 import os  # Added the import for os
 
+print("Current Working Directory:", os.getcwd())  # Added the line to print the current working directory
+
 class GlobalListener:
     def __init__(self, callback):
         self.hotkey = 'ctrl+shift+a'
@@ -46,15 +48,15 @@ class Recorder:
         if self.audio:  # Check if self.audio is not empty
             self.audio = np.concatenate(self.audio, axis=0)
             wav.write('output.wav', self.fs, self.audio)  # Save as WAV file
-
 class WhisperAPI: 
-    def __init__(self):
+    def __init__(self, arg=None):
         try:
             with open('config.json') as config_file:
                 data = json.load(config_file)
-            openai.api_key = data['api_key']
+            openai.api_key = data.get('api_key', 'your_static_key_here')
         except FileNotFoundError:
-            openai.api_key = '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'  # Replace 'your_static_key_here' with your static key
+            print("config.json not found. Please ensure the file exists.")
+            openai.api_key = 'sk-ZZDcq0000000003JI56zT3Blb000000000SrMyk1y6RNU8Ms'  # Backup static key, replace with your static key
 
     def transcribe(self, audio_file):
         audio_file= open(audio_file, "rb")
@@ -82,15 +84,22 @@ def transcribe_and_insert():
 def save_api_key():
     # Here you can write the code to save the API key
     api_key = api_key_input.get()
-    print(f"API Key: {api_key}")  # This is just an example, replace with your own logic
+    openai.api_key = api_key
+    with open('config.json', 'w') as config_file:
+        json.dump({'api_key': api_key}, config_file)
+
 def on_hotkey_press():
     print('Hotkey pressed!')
+
 listener = GlobalListener(on_hotkey_press)
 listener.start_listening()
+
 root = tk.Tk()
-root.title("WhisperWriter")  # Set a fitting title
+root.title("OpenAI Whisper Phython API")  # Set a fitting title
+
 frame = tk.Frame(root)
 frame.grid()
+
 button1 = tk.Button(frame, text='Record', width=40, height=12, padx=15, pady=15)
 button1.grid(row=0, column=0)
 button1.bind('<ButtonPress-1>', on_button_press)
@@ -123,6 +132,7 @@ transcribe_button_label = tk.Label(transcribe_frame, textvariable=transcribe_but
 transcribe_button_label.grid()
 
 api_key_input = tk.Entry(api_key_frame)
+api_key_input.insert(0, openai.api_key)
 api_key_input.grid()
 
 save_button = tk.Button(api_key_frame, text='Save', command=save_api_key)
