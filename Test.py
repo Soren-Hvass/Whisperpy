@@ -16,7 +16,7 @@ class GlobalListener:
     def __init__(self, callback):
         self.hotkey = 'ctrl+shift+a'
         self.callback = callback
-
+ 
     def start_listening(self):
         keyboard.add_hotkey(self.hotkey, self.callback)
 
@@ -49,11 +49,11 @@ class Recorder:
             self.audio = np.concatenate(self.audio, axis=0)
             wav.write('output.wav', self.fs, self.audio)  # Save as WAV file
 class WhisperAPI: 
-    def __init__(self, arg=None):
+    def __init__(self):
         try:
             with open('config.json') as config_file:
                 data = json.load(config_file)
-            openai.api_key = data.get('api_key', 'your_static_key_here')
+            openai.api_key = data.get('api_key', '')
         except FileNotFoundError:
             print("config.json not found. Please ensure the file exists.")
             openai.api_key = 'sk-ZZDcq0000000003JI56zT3Blb000000000SrMyk1y6RNU8Ms'  # Backup static key, replace with your static key
