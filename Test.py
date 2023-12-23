@@ -56,7 +56,7 @@ class WhisperAPI:
             openai.api_key = data.get('api_key', '')
         except FileNotFoundError:
             print("config.json not found. Please ensure the file exists.")
-            openai.api_key = 'sk-ZZDcq0000000003JI56zT3Blb000000000SrMyk1y6RNU8Ms'  # Backup static key, replace with your static key
+            openai.api_key = 'Paste openAPI key'  # Backup static key, replace with your static key
 
     def transcribe(self, audio_file):
         try:
