@@ -26,6 +26,9 @@ Whisperpy is a lightweight and user-friendly application that harnesses the powe
         Register an account with OpenAI: https://platform.openai.com
         Generate your key here: https://platform.openai.com/api-keys
 
+## Known issues
+        Hotkey dosent work.
+        
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
